@@ -97,3 +97,31 @@ Le démarrage de l'ORM doit être centralisé dans `config/database.php`. Ce fic
 Avec SQL écrit à la main, le développeur écrit directement les requêtes SQL.
 
 Avec un ORM, le développeur manipule des modèles et des objets PHP. L'ORM se charge de générer les requêtes SQL nécessaires pour communiquer avec la base de données.
+
+
+
+# Partie 3 — Modèles Eloquent
+
+## 1. Quel type de relation Eloquent avez-vous utilisé ?
+
+Une relation un-à-plusieurs (One-to-Many) :
+
+- `Salle` utilise `hasMany`.
+- `Reservation` utilise `belongsTo`.
+
+Une salle peut donc avoir plusieurs réservations, tandis qu'une réservation appartient à une seule salle.
+
+## 2. Pourquoi déclarer `$fillable` ou `$guarded` ?
+
+Ils permettent de contrôler les attributs autorisés lors de l'affectation de masse et d'éviter qu'un champ non autorisé soit modifié.
+
+## 3. Pourquoi convertir `active` en booléen ?
+
+Parce que `active` représente un état logique :
+
+- `true` pour une salle active ;
+- `false` pour une salle inactive.
+
+## 4. Pourquoi convertir les dates en objets ?
+
+Le cast permet de manipuler les dates comme des objets plutôt que comme de simples chaînes de caractères. Cela facilite leur formatage, leurs comparaisons et les calculs sur les dates.

@@ -17,6 +17,7 @@ try {
             $table->id();
             $table->string('nom');
             $table->integer('capacite');
+            $table->boolean('active')->default(true);
             $table->timestamps();
         });
     }
