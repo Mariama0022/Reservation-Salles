@@ -244,3 +244,35 @@ Le DTO ne doit pas contenir la règle de chevauchement car cette règle appartie
 Le DTO sert uniquement à transporter les données.
 
 La vérification du chevauchement doit être réalisée dans le service métier.
+
+
+
+# Partie 7 — Repositories
+
+## 1. Eloquent constitue-t-il déjà un accès aux données ?
+
+Oui. Eloquent permet déjà d'interroger et de modifier la base de données à travers les modèles.
+
+Par exemple, Eloquent permet d'utiliser `query()`, `where()`, `find()` ou `save()`.
+
+## 2. Pourquoi ajouter un Repository au-dessus d'Eloquent ?
+
+Le Repository permet d'isoler l'accès aux données du reste de l'application.
+
+Les contrôleurs et les services n'ont donc pas besoin de connaître directement Eloquent ou la manière dont les données sont récupérées.
+
+## 3. Cette abstraction est-elle toujours nécessaire ?
+
+Non.
+
+Pour une petite application simple, utiliser directement Eloquent peut être suffisant.
+
+Cependant, dans une application plus importante, un Repository peut être utile pour mieux séparer les responsabilités et faciliter l'évolution du projet.
+
+## 4. Quel avantage apporte-t-elle ?
+
+Le Repository améliore la séparation des responsabilités.
+
+Les contrôleurs et services travaillent avec des interfaces plutôt qu'avec des requêtes Eloquent directement.
+
+Cela facilite notamment les tests, la maintenance et le remplacement éventuel de la technologie d'accès aux données.
