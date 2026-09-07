@@ -3,7 +3,9 @@
     "description": "Application de gestion de reservation de salles",
     "type": "project",
     "require": {
-        "php": "^8.3"
+        "php": "^8.3",
+        "illuminate/database": "^13.30",
+        "vlucas/phpdotenv": "^5.7"
     },
     "require-dev": {
         "phpunit/phpunit": "^11.0"
@@ -19,4 +21,3 @@
         }
     }
 }
-
