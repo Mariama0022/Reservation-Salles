@@ -276,3 +276,32 @@ Le Repository améliore la séparation des responsabilités.
 Les contrôleurs et services travaillent avec des interfaces plutôt qu'avec des requêtes Eloquent directement.
 
 Cela facilite notamment les tests, la maintenance et le remplacement éventuel de la technologie d'accès aux données.
+
+
+# Partie 8 — Règles métier
+
+## 1. Pourquoi ces règles ne sont-elles pas dans le contrôleur ?
+
+Les règles métier ne doivent pas être placées dans le contrôleur car le contrôleur doit principalement recevoir la requête, appeler le service et retourner une réponse.
+
+Les règles métier sont centralisées dans les services afin d'éviter de les dupliquer et de faciliter leur test.
+
+## 2. Pourquoi le service dépend-il d'une interface de Repository ?
+
+Le service dépend d'une interface afin de ne pas être directement lié à une implémentation particulière d'Eloquent.
+
+Cela respecte le principe de séparation des responsabilités et permet notamment de remplacer l'implémentation ou d'utiliser un faux repository pendant les tests.
+
+## 3. Quelle exception doit être levée en cas de conflit ?
+
+En cas de chevauchement avec une réservation existante, le service doit lever `SalleIndisponibleException`.
+
+Cette exception indique que la salle ne peut pas être réservée sur la période demandée.
+
+## 4. Comment tester le service sans MySQL ?
+
+Le service peut être testé avec des faux repositories qui implémentent les mêmes interfaces que les repositories Eloquent.
+
+Les tests peuvent ainsi fournir des données simulées sans accéder à une base de données réelle.
+
+Cela permet de réaliser des tests unitaires rapides et indépendants de MySQL.
