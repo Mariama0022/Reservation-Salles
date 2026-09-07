@@ -1,4 +1,7 @@
-Réponses aux questions
+# Réponses aux questions
+
+# Partie 1
+
 # 1. Quel est le rôle de Composer ?
 
 Composer est le gestionnaire de dépendances de PHP.
@@ -73,3 +76,24 @@ GitHub
 ├── composer.json       ✅
 ├── composer.lock       ✅
 └── vendor/             ❌
+
+
+# Partie 2 — Eloquent
+
+## 1. Quel rôle joue Capsule\Manager ?
+
+`Capsule\Manager` permet de configurer et d'utiliser le composant Database d'Eloquent indépendamment de Laravel. Il permet notamment de configurer la connexion à la base de données et de démarrer Eloquent.
+
+## 2. Pourquoi Eloquent peut-il fonctionner sans Laravel ?
+
+Eloquent est disponible comme composant indépendant grâce au package `illuminate/database`. Laravel utilise Eloquent, mais Eloquent peut également être utilisé dans une application PHP sans le framework Laravel.
+
+## 3. Où doit se trouver le démarrage de l'ORM ?
+
+Le démarrage de l'ORM doit être centralisé dans `config/database.php`. Ce fichier charge les variables d'environnement, configure `Capsule\Manager` et démarre Eloquent. Les classes métier ne doivent pas gérer directement la connexion.
+
+## 4. Quelle différence existe entre ORM et SQL écrit à la main ?
+
+Avec SQL écrit à la main, le développeur écrit directement les requêtes SQL.
+
+Avec un ORM, le développeur manipule des modèles et des objets PHP. L'ORM se charge de générer les requêtes SQL nécessaires pour communiquer avec la base de données.
