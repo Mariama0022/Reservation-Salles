@@ -157,3 +157,49 @@ Cette méthode vérifie d'abord si la salle existe déjà avec le même nom :
 * si elle n'existe pas → elle est créée.
 
 Ainsi, le seeder peut être exécuté plusieurs fois sans créer de doublons.
+
+
+
+# Partie 5 — Validation
+
+## 1. Pourquoi séparer la validation syntaxique des règles métier ?
+
+La validation syntaxique vérifie que les données respectent un format attendu : type, longueur, email valide, entier, date valide, etc.
+
+Les règles métier concernent le fonctionnement de l'application, par exemple vérifier qu'une date de fin est après une date de début.
+
+Séparer les deux permet de garder un code plus clair et de placer chaque responsabilité dans la bonne couche.
+
+## 2. Pourquoi créer une interface de validation ?
+
+L'interface permet de définir un contrat commun pour tous les validateurs.
+
+Ainsi, `SalleValidator` et `ReservationValidator` possèdent la même méthode `validate()` et retournent toutes les deux un `ValidationResult`.
+
+Cela facilite également le remplacement ou l'ajout de nouveaux validateurs.
+
+## 3. Pourquoi le validateur ne doit-il pas enregistrer les données ?
+
+Le validateur doit uniquement vérifier les données.
+
+Il ne doit pas enregistrer les données en base de données car cela mélangerait deux responsabilités différentes : la validation et la persistance.
+
+L'enregistrement doit être réalisé par la couche métier ou le repository.
+
+## 4. Comment retourner plusieurs erreurs en une seule fois ?
+
+Les erreurs sont stockées dans un tableau associatif avec le nom du champ comme clé.
+
+Par exemple :
+
+```php
+[
+    'nom' => 'Le nom est obligatoire.',
+    'capacite' => 'La capacité est invalide.',
+    'email' => 'L\'adresse email est invalide.'
+]
+```
+
+Le `ValidationResult` retourne ensuite ce tableau avec la méthode `errors()`.
+
+Cela permet d'afficher toutes les erreurs à l'utilisateur en une seule fois.
