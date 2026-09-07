@@ -203,3 +203,44 @@ Par exemple :
 Le `ValidationResult` retourne ensuite ce tableau avec la méthode `errors()`.
 
 Cela permet d'afficher toutes les erreurs à l'utilisateur en une seule fois.
+
+
+
+
+# Partie 6 — DTO
+
+## 1. Quelle différence existe entre DTO et modèle Eloquent ?
+
+Un DTO (Data Transfer Object) sert à transporter des données entre les différentes couches de l'application.
+
+Il contient uniquement les données nécessaires et correctement typées.
+
+Un modèle Eloquent représente une donnée persistée en base de données et permet notamment d'effectuer des opérations de lecture et d'écriture.
+
+Le DTO transporte les données tandis que le modèle Eloquent représente les données persistées.
+
+## 2. Pourquoi le DTO ne doit-il pas appeler save() ?
+
+Le DTO ne doit pas appeler `save()` car sa responsabilité est uniquement de transporter les données.
+
+Il ne doit pas connaître la base de données ni gérer la persistance.
+
+L'enregistrement doit être réalisé par le service ou la couche responsable de la persistance.
+
+## 3. À quel moment transforme-t-on les chaînes en dates ?
+
+Les valeurs provenant de `$_POST` sont des chaînes de caractères.
+
+Après la validation, elles sont transformées en objets `DateTimeImmutable` avant d'être placées dans le DTO.
+
+Le DTO reçoit donc des données déjà correctement typées.
+
+## 4. Le DTO doit-il contenir la règle de chevauchement ?
+
+Non.
+
+Le DTO ne doit pas contenir la règle de chevauchement car cette règle appartient à la logique métier.
+
+Le DTO sert uniquement à transporter les données.
+
+La vérification du chevauchement doit être réalisée dans le service métier.
