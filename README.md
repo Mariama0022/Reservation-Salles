@@ -125,3 +125,35 @@ Parce que `active` représente un état logique :
 ## 4. Pourquoi convertir les dates en objets ?
 
 Le cast permet de manipuler les dates comme des objets plutôt que comme de simples chaînes de caractères. Cela facilite leur formatage, leurs comparaisons et les calculs sur les dates.
+
+
+
+# Partie 4 — Données initiales
+
+## 1. Quelle différence existe entre migration et seeder ?
+
+Une **migration** sert à créer ou modifier la structure de la base de données : créer une table, ajouter une colonne, modifier une contrainte, etc.
+
+Un **seeder** sert à ajouter des données initiales dans les tables, par exemple les cinq salles de notre projet.
+
+**En résumé :**
+
+* Migration → structure de la base de données.
+* Seeder → données de départ.
+
+## 2. Pourquoi les données initiales doivent-elles être reproductibles ?
+
+Les données initiales doivent être reproductibles afin de pouvoir exécuter le seeder plusieurs fois sans provoquer d'erreurs ni créer plusieurs fois les mêmes données.
+
+Cela est utile lors de l'installation du projet, des tests ou du déploiement.
+
+## 3. Comment empêcher les doublons ?
+
+Dans notre projet, nous utilisons **`firstOrCreate()`** d'Eloquent.
+
+Cette méthode vérifie d'abord si la salle existe déjà avec le même nom :
+
+* si elle existe → elle n'est pas recréée ;
+* si elle n'existe pas → elle est créée.
+
+Ainsi, le seeder peut être exécuté plusieurs fois sans créer de doublons.
