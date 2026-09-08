@@ -16,4 +16,4 @@ interface SalleRepositoryInterface
     public function trouver(int $id): ?Salle;
 
     public function enregistrer(Salle $salle): Salle;
-}-
+}
