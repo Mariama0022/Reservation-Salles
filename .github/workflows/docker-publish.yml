@@ -6,7 +6,7 @@ on:
       - '**'
 
 env:
-  IMAGE_NAME: reservation-salles
+  IMAGE_NAME: reservation-salles-app
 
 jobs:
   publish:
