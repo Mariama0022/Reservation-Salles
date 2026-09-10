@@ -62,10 +62,15 @@ class ReservationController
             'salle_id' => isset($_POST['salle_id'])
                 ? (int) $_POST['salle_id']
                 : 0,
+
             'responsable' => $_POST['responsable'] ?? '',
+
             'email' => $_POST['email'] ?? '',
+
             'motif' => $_POST['motif'] ?? '',
+
             'date_debut' => $_POST['date_debut'] ?? '',
+
             'date_fin' => $_POST['date_fin'] ?? '',
         ];
 
@@ -93,6 +98,7 @@ class ReservationController
 
             header('Location: /reservations/' . $reservation->id);
             exit;
+
         } catch (SalleIndisponibleException $e) {
             $errors = [
                 'date_debut' => $e->getMessage(),
@@ -101,6 +107,7 @@ class ReservationController
             $salles = $this->salleRepository->lister();
 
             require dirname(__DIR__, 2) . '/templates/reservation/form.php';
+
         } catch (Throwable $e) {
             $errors = [
                 'date_debut' => $e->getMessage(),
@@ -119,8 +126,10 @@ class ReservationController
 
             header('Location: /reservations');
             exit;
+
         } catch (ReservationIntrouvableException) {
             http_response_code(404);
+
             require dirname(__DIR__, 2) . '/templates/error/404.php';
         }
     }

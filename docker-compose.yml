@@ -1,29 +1,20 @@
 services:
-  mysql:
-    image: mysql:8.0
-    container_name: reservation-salles-mysql
-    restart: unless-stopped
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: reservation_salles
-    ports:
-      - "3306:3306"
-    volumes:
-      - mysql_data:/var/lib/mysql
 
-volumes:
-  mysql_data:
-          services:
   app:
     build:
       context: .
       dockerfile: Dockerfile
+
     container_name: reservation-salles-app
+
     restart: unless-stopped
+
     ports:
       - "8000:80"
+
     depends_on:
       - mysql
+
     environment:
       DB_DRIVER: mysql
       DB_HOST: mysql
@@ -34,13 +25,15 @@ volumes:
 
   mysql:
     image: mysql:8.0
+
     container_name: reservation-salles-mysql
+
     restart: unless-stopped
+
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: reservation_salles
-    ports:
-      - "3306:3306"
+
     volumes:
       - mysql_data:/var/lib/mysql
 

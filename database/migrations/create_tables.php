@@ -15,8 +15,10 @@ try {
     if (!$schema->hasTable('salles')) {
         $schema->create('salles', function (Blueprint $table): void {
             $table->id();
-            $table->string('nom');
-            $table->integer('capacite');
+            $table->string('nom', 100);
+            $table->string('batiment', 100);
+            $table->unsignedInteger('capacite');
+            $table->string('type', 30);
             $table->boolean('active')->default(true);
             $table->timestamps();
         });
@@ -25,11 +27,12 @@ try {
     if (!$schema->hasTable('reservations')) {
         $schema->create('reservations', function (Blueprint $table): void {
             $table->id();
-            $table->string('nom_reservant');
-            $table->date('date_reservation');
-            $table->time('heure_debut');
-            $table->time('heure_fin');
             $table->foreignId('salle_id')->constrained('salles');
+            $table->string('responsable', 120);
+            $table->string('email', 255);
+            $table->string('motif', 255);
+            $table->dateTime('date_debut');
+            $table->dateTime('date_fin');
             $table->timestamps();
         });
     }

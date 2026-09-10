@@ -26,8 +26,14 @@ class EloquentReservationRepository implements ReservationRepositoryInterface
     ): ?Reservation {
         return Reservation::query()
             ->where('salle_id', $salleId)
-            ->where('date_debut', '<', $dateFin)
-            ->where('date_fin', '>', $dateDebut)
+            ->whereRaw(
+                "TIMESTAMP(date_reservation, heure_debut) < ?",
+                [$dateFin->format('Y-m-d H:i:s')]
+            )
+            ->whereRaw(
+                "TIMESTAMP(date_reservation, heure_fin) > ?",
+                [$dateDebut->format('Y-m-d H:i:s')]
+            )
             ->first();
     }
 

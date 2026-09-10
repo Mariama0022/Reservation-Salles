@@ -5,18 +5,22 @@ declare(strict_types=1);
 use Dotenv\Dotenv;
 use Illuminate\Database\Capsule\Manager as Capsule;
 
-$dotenv = Dotenv::createImmutable(dirname(__DIR__));
-$dotenv->load();
+$envFile = dirname(__DIR__) . '/.env';
+
+if (file_exists($envFile)) {
+    $dotenv = Dotenv::createImmutable(dirname(__DIR__));
+    $dotenv->load();
+}
 
 $capsule = new Capsule();
 
 $capsule->addConnection([
-    'driver' => $_ENV['DB_DRIVER'],
-    'host' => $_ENV['DB_HOST'],
-    'port' => $_ENV['DB_PORT'],
-    'database' => $_ENV['DB_DATABASE'],
-    'username' => $_ENV['DB_USERNAME'],
-    'password' => $_ENV['DB_PASSWORD'],
+    'driver' => $_ENV['DB_DRIVER'] ?? getenv('DB_DRIVER'),
+    'host' => $_ENV['DB_HOST'] ?? getenv('DB_HOST'),
+    'port' => $_ENV['DB_PORT'] ?? getenv('DB_PORT'),
+    'database' => $_ENV['DB_DATABASE'] ?? getenv('DB_DATABASE'),
+    'username' => $_ENV['DB_USERNAME'] ?? getenv('DB_USERNAME'),
+    'password' => $_ENV['DB_PASSWORD'] ?? getenv('DB_PASSWORD'),
     'charset' => 'utf8mb4',
     'collation' => 'utf8mb4_unicode_ci',
     'prefix' => '',

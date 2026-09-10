@@ -12,11 +12,11 @@ class Reservation extends Model
     protected $table = 'reservations';
 
     protected $fillable = [
+        'salle_id',
         'nom_reservant',
         'date_reservation',
         'heure_debut',
         'heure_fin',
-        'salle_id',
     ];
 
     protected $casts = [

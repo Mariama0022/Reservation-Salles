@@ -25,7 +25,16 @@ ob_start();
                 </a>
 
                 -
-                <?= htmlspecialchars($reservation->responsable) ?>
+                <?= htmlspecialchars((string) $reservation->nom_reservant) ?>
+
+                -
+                <?= htmlspecialchars((string) $reservation->date_reservation) ?>
+
+                de
+                <?= htmlspecialchars((string) $reservation->heure_debut) ?>
+
+                à
+                <?= htmlspecialchars((string) $reservation->heure_fin) ?>
             </li>
         <?php endforeach; ?>
     </ul>
@@ -35,3 +44,4 @@ ob_start();
 <?php
 $content = ob_get_clean();
 require dirname(__DIR__) . '/layout/base.php';
+

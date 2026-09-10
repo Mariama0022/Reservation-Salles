@@ -13,7 +13,9 @@ class Salle extends Model
 
     protected $fillable = [
         'nom',
+        'batiment',
         'capacite',
+        'type',
         'active',
     ];
 

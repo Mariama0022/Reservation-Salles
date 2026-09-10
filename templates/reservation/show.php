@@ -11,27 +11,27 @@ ob_start();
 
 <p>
     Responsable :
-    <?= htmlspecialchars($reservation->responsable) ?>
+    <?= htmlspecialchars((string) $reservation->nom_reservant) ?>
 </p>
 
 <p>
-    Email :
-    <?= htmlspecialchars($reservation->email) ?>
+    Salle :
+    <?= (int) $reservation->salle_id ?>
 </p>
 
 <p>
-    Motif :
-    <?= htmlspecialchars($reservation->motif) ?>
+    Date :
+    <?= htmlspecialchars((string) $reservation->date_reservation) ?>
 </p>
 
 <p>
-    Début :
-    <?= htmlspecialchars($reservation->date_debut->format('d/m/Y H:i')) ?>
+    Heure de début :
+    <?= htmlspecialchars((string) $reservation->heure_debut) ?>
 </p>
 
 <p>
-    Fin :
-    <?= htmlspecialchars($reservation->date_fin->format('d/m/Y H:i')) ?>
+    Heure de fin :
+    <?= htmlspecialchars((string) $reservation->heure_fin) ?>
 </p>
 
 <form
@@ -50,3 +50,4 @@ ob_start();
 <?php
 $content = ob_get_clean();
 require dirname(__DIR__) . '/layout/base.php';
+

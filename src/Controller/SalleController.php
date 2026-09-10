@@ -77,7 +77,9 @@ class SalleController
         $salle = new Salle();
 
         $salle->nom = $dto->nom;
+        $salle->batiment = $dto->batiment;
         $salle->capacite = $dto->capacite;
+        $salle->type = $dto->type;
         $salle->active = $dto->active;
 
         $this->salleRepository->enregistrer($salle);
@@ -99,9 +101,9 @@ class SalleController
         $errors = [];
         $data = [
             'nom' => $salle->nom,
-            'batiment' => '',
+            'batiment' => $salle->batiment,
             'capacite' => $salle->capacite,
-            'type' => '',
+            'type' => $salle->type,
             'active' => $salle->active,
         ];
 

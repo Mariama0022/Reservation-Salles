@@ -41,8 +41,20 @@ class CreerReservationService
             );
         }
 
-        // 4. Vérifier que la durée ne dépasse pas quatre heures
-        $duree = $dto->dateFin->getTimestamp() - $dto->dateDebut->getTimestamp();
+        // 4. Vérifier que la réservation est sur une seule journée
+        if (
+            $dto->dateDebut->format('Y-m-d')
+            !==
+            $dto->dateFin->format('Y-m-d')
+        ) {
+            throw new DomainException(
+                'Une réservation doit commencer et finir le même jour.'
+            );
+        }
+
+        // 5. Vérifier que la durée ne dépasse pas quatre heures
+        $duree = $dto->dateFin->getTimestamp()
+            - $dto->dateDebut->getTimestamp();
 
         if ($duree > 4 * 60 * 60) {
             throw new DomainException(
@@ -50,14 +62,14 @@ class CreerReservationService
             );
         }
 
-        // 5. Vérifier que la date est future
+        // 6. Vérifier que la date est future
         if ($dto->dateDebut <= new DateTimeImmutable()) {
             throw new DomainException(
                 'La réservation doit commencer dans le futur.'
             );
         }
 
-        // 6. Rechercher les chevauchements
+        // 7. Rechercher les chevauchements
         $conflit = $this->reservationRepository->rechercherConflit(
             $dto->salleId,
             $dto->dateDebut,
@@ -70,17 +82,23 @@ class CreerReservationService
             );
         }
 
-        // 7. Créer la réservation
+        // 8. Créer la réservation
         $reservation = new Reservation();
 
         $reservation->salle_id = $dto->salleId;
-        $reservation->responsable = $dto->responsable;
-        $reservation->email = $dto->email;
-        $reservation->motif = $dto->motif;
-        $reservation->date_debut = $dto->dateDebut;
-        $reservation->date_fin = $dto->dateFin;
 
-        // 8. Enregistrer
+        $reservation->nom_reservant = $dto->responsable;
+
+        $reservation->date_reservation =
+            $dto->dateDebut->format('Y-m-d');
+
+        $reservation->heure_debut =
+            $dto->dateDebut->format('H:i:s');
+
+        $reservation->heure_fin =
+            $dto->dateFin->format('H:i:s');
+
+        // 9. Enregistrer
         return $this->reservationRepository->enregistrer($reservation);
     }
 }

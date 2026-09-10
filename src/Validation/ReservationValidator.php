@@ -28,11 +28,22 @@ class ReservationValidator implements ValidatorInterface
             $errors['motif'] = 'Le motif doit contenir entre 5 et 255 caractères.';
         }
 
-        if (!v::date('Y-m-d H:i:s')->isValid($data['date_debut'] ?? null)) {
+        $dateDebut = $data['date_debut'] ?? null;
+        $dateFin = $data['date_fin'] ?? null;
+
+        if (
+            !is_string($dateDebut)
+            || !preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/', $dateDebut)
+            || \DateTime::createFromFormat('Y-m-d\TH:i', $dateDebut) === false
+        ) {
             $errors['date_debut'] = 'La date de début est invalide.';
         }
 
-        if (!v::date('Y-m-d H:i:s')->isValid($data['date_fin'] ?? null)) {
+        if (
+            !is_string($dateFin)
+            || !preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/', $dateFin)
+            || \DateTime::createFromFormat('Y-m-d\TH:i', $dateFin) === false
+        ) {
             $errors['date_fin'] = 'La date de fin est invalide.';
         }
 
@@ -43,3 +54,4 @@ class ReservationValidator implements ValidatorInterface
         );
     }
 }
+

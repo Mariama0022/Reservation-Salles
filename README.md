@@ -279,6 +279,36 @@ Cela facilite notamment les tests, la maintenance et le remplacement éventuel d
 
 
 
+# Partie 8 — Règles métier
+
+## 1. Pourquoi ces règles ne sont-elles pas dans le contrôleur ?
+
+Les règles métier ne doivent pas être placées dans le contrôleur car le contrôleur doit principalement recevoir la requête, appeler le service et retourner une réponse.
+
+Les règles métier sont centralisées dans les services afin d'éviter de les dupliquer et de faciliter leur test.
+
+## 2. Pourquoi le service dépend-il d'une interface de Repository ?
+
+Le service dépend d'une interface afin de ne pas être directement lié à une implémentation particulière d'Eloquent.
+
+Cela respecte le principe de séparation des responsabilités et permet notamment de remplacer l'implémentation ou d'utiliser un faux repository pendant les tests.
+
+## 3. Quelle exception doit être levée en cas de conflit ?
+
+En cas de chevauchement avec une réservation existante, le service doit lever `SalleIndisponibleException`.
+
+Cette exception indique que la salle ne peut pas être réservée sur la période demandée.
+
+## 4. Comment tester le service sans MySQL ?
+
+Le service peut être testé avec des faux repositories qui implémentent les mêmes interfaces que les repositories Eloquent.
+
+Les tests peuvent ainsi fournir des données simulées sans accéder à une base de données réelle.
+
+Cela permet de réaliser des tests unitaires rapides et indépendants de MySQL.
+
+
+
 
 # Partie 9 — Contrôleurs et vues
 
@@ -299,3 +329,152 @@ Toutes les données dynamiques affichées doivent être échappées avec `htmlsp
 Après un POST réussi, le contrôleur effectue une redirection afin d'éviter de soumettre à nouveau le formulaire lors d'un rafraîchissement.
 
 Les erreurs de validation sont affichées directement près des champs concernés.
+
+
+# Partie 10 — FastRoute
+
+## 1. Pourquoi FastRoute ne construit-il pas lui-même le contrôleur ?
+
+FastRoute est responsable du routage.
+
+Son rôle est de déterminer quelle route correspond à la requête HTTP et de retourner le handler associé.
+
+La construction du contrôleur et l'injection de ses dépendances sont des responsabilités du conteneur.
+
+## 2. Quelle différence existe entre 404 et 405 ?
+
+Une erreur 404 signifie que la route demandée n'existe pas.
+
+Une erreur 405 signifie que la route existe, mais que la méthode HTTP utilisée n'est pas autorisée.
+
+Dans le cas d'une réponse 405, l'en-tête `Allow` indique les méthodes autorisées.
+
+## 3. Pourquoi contraindre `{id}` avec `\d+` ?
+
+La contrainte `\d+` indique que le paramètre `id` doit être composé uniquement de chiffres.
+
+Elle permet ainsi d'accepter des identifiants numériques et de refuser des valeurs qui ne correspondent pas à un identifiant.
+
+## 4. Quel composant doit interpréter le handler retourné ?
+
+Le conteneur doit interpréter le handler retourné par FastRoute.
+
+FastRoute retourne par exemple :
+
+```php
+[
+    SalleController::class,
+    'show'
+]
+# Vérification finale — Étapes 1 à 10
+
+Le projet respecte l'architecture demandée :
+
+- Composer et autoload PSR-4 sont configurés dans `composer.json`.
+- Eloquent est configuré dans `config/database.php`.
+- Les modèles `Salle` et `Reservation` utilisent Eloquent et leurs relations.
+- La migration définit les colonnes utilisées par les modèles, les DTO et les formulaires.
+- Le seeder utilise `firstOrCreate()` pour rester reproductible.
+- La validation est séparée des règles métier.
+- Les DTO transportent des données typées sans accéder à la base de données.
+- Les repositories isolent Eloquent derrière des interfaces.
+- Les services portent les règles métier et utilisent les interfaces de repository.
+- Les contrôleurs reçoivent les données HTTP, valident, construisent les DTO, appellent les services et redirigent après succès.
+- Les vues ne contiennent pas de requêtes Eloquent et échappent les données affichées.
+- FastRoute contient uniquement les déclarations de routes dans `routes/web.php`.
+- Le conteneur est une vraie classe `App\Core\Container`, chargée par PSR-4, avec les interfaces de repository liées à leurs implémentations Eloquent.
+- Apache redirige les URL applicatives vers `public/index.php` afin que FastRoute puisse traiter `/salles`, `/reservations`, etc.
+
+
+
+
+Les 5 questions de l'exercice
+1. Différence entre injection et conteneur
+
+L'injection de dépendances consiste à donner à une classe les objets dont elle a besoin depuis l'extérieur.
+
+Le conteneur est l'outil qui crée ces objets et les fournit automatiquement.
+
+Exemple :
+
+Injection
+   ↓
+Service reçoit Repository
+
+Conteneur
+   ↓
+Crée Repository
+   ↓
+Crée Service
+   ↓
+Injecte Repository dans Service
+2. Qu'est-ce que l'autowiring ?
+
+L'autowiring permet à PHP-DI de déterminer automatiquement les dépendances d'une classe grâce à son constructeur et aux types indiqués.
+
+Par exemple :
+
+public function __construct(
+    SalleRepositoryInterface $salles
+)
+
+PHP-DI cherche quelle classe concrète correspond à SalleRepositoryInterface.
+
+3. Pourquoi les interfaces nécessitent-elles une définition ?
+
+Parce qu'une interface ne peut pas être instanciée directement.
+
+On doit donc préciser :
+
+SalleRepositoryInterface::class =>
+    autowire(EloquentSalleRepository::class)
+4. Pourquoi limiter $container->get() au point d'entrée ?
+
+Parce que le conteneur doit rester centralisé.
+
+Le point d'entrée demande :
+
+$container->get(Application::class);
+
+Puis PHP-DI construit toute l'application.
+
+Les classes métier ne doivent pas connaître le conteneur.
+
+5. Quel anti-pattern apparaît si toutes les classes interrogent le conteneur ?
+
+C'est le Service Locator anti-pattern.
+
+Au lieu de recevoir leurs dépendances :
+
+public function __construct(
+    SalleRepositoryInterface $salles
+)
+
+les classes feraient :
+
+$container->get(SalleRepositoryInterface::class);
+
+Cela rend le code :
+
+plus difficile à tester ;
+plus difficile à comprendre ;
+plus fortement couplé au conteneur ;
+moins propre architecturalement.
+
+Donc ton professeur veut :
+
+public/index.php
+       ↓
+    Container
+       ↓
+ Application
+       ↓
+ Services
+       ↓
+ Repositories
+
+et pas :
+
+Service → Container → Repository
+Controller → Container → Service
+Repository → Container → ...
