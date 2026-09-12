@@ -20,16 +20,22 @@ class EloquentReservationRepository implements ReservationRepositoryInterface
     }
 
     public function rechercherConflit(
-        int $salleId,
-        DateTimeImmutable $dateDebut,
-        DateTimeImmutable $dateFin
-    ): ?Reservation {
-        return Reservation::query()
-            ->where('salle_id', $salleId)
-            ->where('date_debut', '<', $dateFin)
-            ->where('date_fin', '>', $dateDebut)
-            ->first();
-    }
+    int $salleId,
+    DateTimeImmutable $dateDebut,
+    DateTimeImmutable $dateFin
+): ?Reservation {
+    return Reservation::query()
+        ->where('salle_id', $salleId)
+        ->whereRaw(
+            "TIMESTAMP(date_reservation, heure_debut) < ?",
+            [$dateFin->format('Y-m-d H:i:s')]
+        )
+        ->whereRaw(
+            "TIMESTAMP(date_reservation, heure_fin) > ?",
+            [$dateDebut->format('Y-m-d H:i:s')]
+        )
+        ->first();
+}
 
     public function enregistrer(Reservation $reservation): Reservation
     {

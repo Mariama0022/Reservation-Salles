@@ -19,9 +19,7 @@ class Reservation extends Model
         'salle_id',
     ];
 
-    protected $casts = [
-        'date_reservation' => 'date',
-    ];
+    protected $casts = [];
 
     public function salle(): BelongsTo
     {

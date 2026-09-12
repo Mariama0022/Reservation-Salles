@@ -71,14 +71,14 @@ class CreerReservationService
         }
 
         // 7. Créer la réservation
+        
         $reservation = new Reservation();
 
         $reservation->salle_id = $dto->salleId;
-        $reservation->responsable = $dto->responsable;
-        $reservation->email = $dto->email;
-        $reservation->motif = $dto->motif;
-        $reservation->date_debut = $dto->dateDebut;
-        $reservation->date_fin = $dto->dateFin;
+        $reservation->nom_reservant = $dto->responsable;
+        $reservation->date_reservation = $dto->dateDebut->format('Y-m-d');
+        $reservation->heure_debut = $dto->dateDebut->format('H:i:s');
+        $reservation->heure_fin = $dto->dateFin->format('H:i:s');
 
         // 8. Enregistrer
         return $this->reservationRepository->enregistrer($reservation);
